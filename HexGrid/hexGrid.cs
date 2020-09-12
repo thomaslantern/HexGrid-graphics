@@ -14,7 +14,7 @@ namespace HexGrid
     {
         public hexGrid()
         {
-            InitializeComponent();
+           InitializeComponent();
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
@@ -24,11 +24,13 @@ namespace HexGrid
 
 
             // Hex set-up
-            int pixels = 30;
+            int pixels = 25;
             int x = pixels;
             int y = pixels / 2;
-            int origX = 100;
-            int origY = 100;
+            int beginHexX;
+            int beginHexY;
+            int startX = 150;
+            int startY = 150;
             
 
 
@@ -41,17 +43,17 @@ namespace HexGrid
                 for (int cols = 1; cols <= maxCols; cols++)
                 {
                     int offsetX = ((rows - 1) % 2);
-                    origX = 100 + ((cols - 1) * 2 * pixels) + (offsetX * pixels);
-                    origY = 100 + ((rows - 1) * 2 * pixels);
+                    beginHexX = startX + ((cols - 1) * 2 * pixels) + (offsetX * pixels);
+                    beginHexY = startY + ((rows - 1) * 2 * pixels);
                     Point[] hexPoints =
                     {
-                    new Point(origX, origY),
-                    new Point(origX + x, origY - y),
-                    new Point(origX + (2*x), origY),
-                    new Point(origX + (2*x), origY + y + pixels),
-                    new Point(origX + x, origY + pixels + (2*y)),
-                    new Point(origX, origY + y + pixels),
-                    new Point(origX, origY)
+                    new Point(beginHexX, beginHexY),
+                    new Point(beginHexX + x, beginHexY - y),
+                    new Point(beginHexX + (2*x), beginHexY),
+                    new Point(beginHexX + (2*x), beginHexY + y + pixels),
+                    new Point(beginHexX + x, beginHexY + pixels + (2*y)),
+                    new Point(beginHexX, beginHexY + y + pixels),
+                    new Point(beginHexX, beginHexY)
                     };
 
 
