@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace HexGrid
 {
-    class Coordinates
-    {
+    
         public class Coords
         {
             public Coords()
@@ -34,5 +33,5 @@ namespace HexGrid
 
 
         }
-    }
+    
 }

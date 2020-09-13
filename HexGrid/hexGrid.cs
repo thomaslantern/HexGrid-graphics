@@ -28,9 +28,9 @@ namespace HexGrid
 
         }
 
-        
 
-    private void Form1_Paint(object sender, PaintEventArgs e)
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
         {
             Graphics g = e.Graphics;
             Pen myPen = new Pen(Color.Red);
@@ -44,7 +44,7 @@ namespace HexGrid
             int beginHexY;
             int startX = 150;
             int startY = 150;
-            
+
 
 
             for (int rows = 1; rows <= 10; rows++)
@@ -52,7 +52,7 @@ namespace HexGrid
                 int maxCols;
                 if ((rows % 2) == 0) maxCols = 9;
                 else maxCols = 10;
-                
+
                 for (int cols = 1; cols <= maxCols; cols++)
                 {
                     int offsetX = ((rows - 1) % 2);
@@ -76,8 +76,33 @@ namespace HexGrid
                 }
             }
 
+            var coordTestList = new List<Creature>()
+            {
+                new Creature {Name = "obstacle", xyPos = new Coords (3, 3), Movement = 7 },
+                new Creature {Name = "I'm Batman", xyPos = new Coords (7, 3), Movement = 6 },
+                new Creature {Name = "Beanie", xyPos = new Coords (6, 6), Movement = 3 } };
+            FillAllHexes(coordTestList);
 
-            FillHex(3, 3, "Blue", myPen);
+
+            void FillAllHexes(List<Creature> creatureList)
+            {
+                foreach (Creature critter in creatureList)
+                {
+                    string colour;
+                    switch (critter.Name)
+                    {
+                        case "obstacle":
+                        
+                            colour = "Brown";
+                            break;
+                        
+                        default: 
+                            colour = "Blue";
+                            break;
+                    }
+                        FillHex(critter.xyPos.getX(), critter.xyPos.getY(), colour, myPen);
+                }
+            }
             
 
             void FillHex(int hexRow, int hexCol, string colour, Pen hexPen)
@@ -102,10 +127,21 @@ namespace HexGrid
                     new Point(beginHexX, beginHexY)
         };
 
-
-                // Create solid brush.
                 SolidBrush redBrush = new SolidBrush(Color.Blue);
 
+                // Create solid brush.
+                switch (colour)
+                {
+                    case "Blue":
+                        {
+                            redBrush = new SolidBrush(Color.Blue);
+                        }
+                        break;
+                    case "Brown":
+                        {
+                            redBrush = new SolidBrush(Color.Brown);
+                        }break;
+                }
                 // Create graphics path object and add ellipse.
                 GraphicsPath graphPath = new GraphicsPath();
                 graphPath.AddPolygon(hexPoints);
