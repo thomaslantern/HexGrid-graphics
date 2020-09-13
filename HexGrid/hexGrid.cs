@@ -17,18 +17,17 @@ namespace HexGrid
 {
 
 
-    
+
 
 
     public partial class hexGrid : Form
     {
         public hexGrid()
         {
-           InitializeComponent();
+            InitializeComponent();
 
         }
-
-
+        
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -76,12 +75,7 @@ namespace HexGrid
                 }
             }
 
-            var coordTestList = new List<Creature>()
-            {
-                new Creature {Name = "obstacle", xyPos = new Coords (3, 3), Movement = 7 },
-                new Creature {Name = "I'm Batman", xyPos = new Coords (7, 3), Movement = 6 },
-                new Creature {Name = "Beanie", xyPos = new Coords (6, 6), Movement = 3 } };
-            FillAllHexes(coordTestList);
+
 
 
             void FillAllHexes(List<Creature> creatureList)
@@ -92,29 +86,29 @@ namespace HexGrid
                     switch (critter.Name)
                     {
                         case "obstacle":
-                        
+
                             colour = "Brown";
                             break;
-                        
-                        default: 
+
+                        default:
                             colour = "Blue";
                             break;
                     }
-                        FillHex(critter.xyPos.getX(), critter.xyPos.getY(), colour, myPen);
+                    FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen);
                 }
             }
-            
 
-            void FillHex(int hexRow, int hexCol, string colour, Pen hexPen)
+
+            void FillHex(int hexCol, int hexRow, string colour, Pen hexPen)
             {
-                
-              
 
 
 
 
-                int offsetX = ((hexRow - 1) % 2);
-                beginHexX = startX + ((hexCol - 1) * 2 * pixels) + (offsetX * pixels);
+
+
+                //int offsetX = ((hexRow) % 2);
+                beginHexX = startX + ((hexCol - 1) * pixels);// + (offsetX * pixels);
                 beginHexY = startY + ((hexRow - 1) * 2 * pixels);
                 Point[] hexPoints =
                 {
@@ -140,7 +134,7 @@ namespace HexGrid
                     case "Brown":
                         {
                             redBrush = new SolidBrush(Color.Brown);
-                        }break;
+                        } break;
                 }
                 // Create graphics path object and add ellipse.
                 GraphicsPath graphPath = new GraphicsPath();
@@ -159,13 +153,33 @@ namespace HexGrid
 
         private void Randomizer_Click(object sender, EventArgs e)
         {
+            var coordTestList = new List<Creature>();
             Random random = new Random();
-            int obstacleCount = random.Next(11);
-            for (int obstacle = 1; obstacle <= obstacleCount; obstacle++)
+            int itemCount = random.Next(11);
+            for (int item = 1; item <= itemCount; item++)
             {
-                int yCoord = random.Next(5);
-                MessageBox.Show("I LOVE YOU TIMES " + obstacle.ToString() + " out of " + obstacleCount.ToString());
+                int xCoord;
+                int yCoord = random.Next(10);
+                int randMove = random.Next(11);
+                if ((yCoord % 2) == 1) xCoord = random.Next(11) * 2 - (yCoord % 2);
+                else xCoord = random.Next(10) * 2;
+                string creatureName;
+                if (item == 1) creatureName = "First";
+                else creatureName = "obstacle";
+
+                coordTestList.Add(new Creature
+                {
+                    Name = creatureName,
+                    XYPos = new Coords(xCoord, yCoord),
+                    Movement = randMove
+                });
+
+
+
+
             }
+           //FillAllHexes(coordTestList);
         }
-    }
+    } 
 }
+

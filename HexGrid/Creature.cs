@@ -9,7 +9,7 @@ namespace HexGrid
 	public class Creature
 	{
 		public string Name { get; set; }
-		public Coords xyPos { get; set; }
+		public Coords XYPos { get; set; }
 		public int Movement { get; set; }
 
 
