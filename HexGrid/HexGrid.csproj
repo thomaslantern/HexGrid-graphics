@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Coordinates.cs" />
     <Compile Include="Creature.cs" />
+    <Compile Include="Hex.cs" />
     <Compile Include="hexGrid.cs">
       <SubType>Form</SubType>
     </Compile>

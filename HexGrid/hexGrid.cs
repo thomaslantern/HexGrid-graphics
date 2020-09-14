@@ -29,14 +29,15 @@ namespace HexGrid
         }
         Graphics g;
         Pen myPen = new Pen(Color.Red);
+        Brush myBrush = new SolidBrush(Color.White);
         int pixels = 25;
         
         int beginHexX;
         int beginHexY;
         int startX = 150;
         int startY = 150;
-
-        PaintEventArgs pEventArg;
+        List<Hex> gridMap = new List<Hex>() { };
+        
 
         private void Grid_Paint(object sender, PaintEventArgs e)
         {
@@ -72,10 +73,17 @@ namespace HexGrid
                     new Point(beginHexX, beginHexY + y + pixels),
                     new Point(beginHexX, beginHexY)
                     };
+                    int coordX = (rows + (rows % 2)) / 2;
+                    gridMap.Add(new Hex()
+                    {
+                        points = hexPoints,
+                        Colour = "White",
+                        Coords = new Coords(coordX, rows)
 
+                    });
                     g.DrawLines(myPen, hexPoints);
 
-
+                    //GET THA BRUSH IN THERE
 
                 }
             }
@@ -120,30 +128,7 @@ namespace HexGrid
         void FillHex(int hexCol, int hexRow, string colour, Pen hexPen, Graphics e)
         {
             
-            int x = pixels;
-            int y = pixels / 2;
-            hexCol = (hexCol + (hexCol % 2)) / 2;
             
-            
-            int beginHaxX;
-            int beginHaxY;
-            
-            beginHaxX = startX + ((hexCol - 1) * pixels);
-            beginHaxY = startY + ((hexRow - 1) * 2 * pixels);
-            
-            Point[] hexPoints =
-            {
-                    new Point(beginHaxX, beginHaxY),
-                    new Point(beginHaxX + x, beginHaxY - y),
-                    new Point(beginHaxX + (2*x), beginHaxY),
-                    new Point(beginHaxX + (2*x), beginHaxY + y + pixels),
-                    new Point(beginHaxX + x, beginHaxY + pixels + (2*y)),
-                    new Point(beginHaxX, beginHaxY + y + pixels),
-                    new Point(beginHaxX, beginHaxY)
-        };
-            MessageBox.Show(hexPoints.ToString());
-            SolidBrush redBrush = new SolidBrush(Color.Blue);
-
             // Create solid brush.
             switch (colour)
             {
