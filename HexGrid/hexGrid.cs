@@ -27,22 +27,24 @@ namespace HexGrid
             InitializeComponent();
 
         }
+        Graphics g;
+        Pen myPen = new Pen(Color.Red);
+        int pixels = 25;
         
+        int beginHexX;
+        int beginHexY;
+        int startX = 150;
+        int startY = 150;
 
-        private void Form1_Paint(object sender, PaintEventArgs e)
+        private void Grid_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
-            Pen myPen = new Pen(Color.Red);
+            g = e.Graphics;
+
 
 
             // Hex set-up
-            int pixels = 25;
             int x = pixels;
             int y = pixels / 2;
-            int beginHexX;
-            int beginHexY;
-            int startX = 150;
-            int startY = 150;
 
 
 
@@ -78,40 +80,56 @@ namespace HexGrid
 
 
 
-            void FillAllHexes(List<Creature> creatureList)
+            
+
+            
+
+
+
+        }
+
+        void FillAllHexes(List<Creature> creatureList)
+        {
+            foreach (Creature critter in creatureList)
             {
-                foreach (Creature critter in creatureList)
+                string colour;
+                switch (critter.Name)
                 {
-                    string colour;
-                    switch (critter.Name)
-                    {
-                        case "obstacle":
+                    case "obstacle":
 
-                            colour = "Brown";
-                            break;
+                        colour = "Brown";
+                        break;
 
-                        default:
-                            colour = "Blue";
-                            break;
-                    }
-                    FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen);
+                    default:
+                        colour = "Blue";
+                        break;
                 }
+                /*MessageBox.Show(critter.Name);
+                MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
+                MessageBox.Show(critter.Movement.ToString());*/
+
+
+                FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen);
             }
+        }
+
+        void FillHex(int hexCol, int hexRow, string colour, Pen hexPen)
+        {
+
+            MessageBox.Show(hexCol.ToString());
+            MessageBox.Show(hexRow.ToString());
+            MessageBox.Show(colour);
+            MessageBox.Show(hexPen.ToString());
+            int x = pixels;
+            int y = pixels / 2;
 
 
-            void FillHex(int hexCol, int hexRow, string colour, Pen hexPen)
+
+            //int offsetX = ((hexRow) % 2);
+            beginHexX = startX + ((hexCol - 1) * pixels);// + (offsetX * pixels);
+            beginHexY = startY + ((hexRow - 1) * 2 * pixels);
+            Point[] hexPoints =
             {
-
-
-
-
-
-
-                //int offsetX = ((hexRow) % 2);
-                beginHexX = startX + ((hexCol - 1) * pixels);// + (offsetX * pixels);
-                beginHexY = startY + ((hexRow - 1) * 2 * pixels);
-                Point[] hexPoints =
-                {
                     new Point(beginHexX, beginHexY),
                     new Point(beginHexX + x, beginHexY - y),
                     new Point(beginHexX + (2*x), beginHexY),
@@ -121,34 +139,31 @@ namespace HexGrid
                     new Point(beginHexX, beginHexY)
         };
 
-                SolidBrush redBrush = new SolidBrush(Color.Blue);
+            SolidBrush redBrush = new SolidBrush(Color.Blue);
 
-                // Create solid brush.
-                switch (colour)
-                {
-                    case "Blue":
-                        {
-                            redBrush = new SolidBrush(Color.Blue);
-                        }
-                        break;
-                    case "Brown":
-                        {
-                            redBrush = new SolidBrush(Color.Brown);
-                        } break;
-                }
-                // Create graphics path object and add ellipse.
-                GraphicsPath graphPath = new GraphicsPath();
-                graphPath.AddPolygon(hexPoints);
-
-
-                // Fill graphics path to screen.
-                g.FillPath(redBrush, graphPath);
-
-                g.DrawLines(hexPen, hexPoints);
+            // Create solid brush.
+            switch (colour)
+            {
+                case "Blue":
+                    {
+                        redBrush = new SolidBrush(Color.Blue);
+                    }
+                    break;
+                case "Brown":
+                    {
+                        redBrush = new SolidBrush(Color.Brown);
+                    }
+                    break;
             }
+            // Create graphics path object and add ellipse.
+            GraphicsPath graphPath = new GraphicsPath();
+            graphPath.AddPolygon(hexPoints);
 
 
+            // Fill graphics path to screen.
+            g.FillPath(redBrush, graphPath);
 
+            g.DrawLines(hexPen, hexPoints);
         }
 
         private void Randomizer_Click(object sender, EventArgs e)
@@ -159,10 +174,10 @@ namespace HexGrid
             for (int item = 1; item <= itemCount; item++)
             {
                 int xCoord;
-                int yCoord = random.Next(10);
-                int randMove = random.Next(11);
-                if ((yCoord % 2) == 1) xCoord = random.Next(11) * 2 - (yCoord % 2);
-                else xCoord = random.Next(10) * 2;
+                int yCoord = random.Next(10) + 1;
+                int randMove = random.Next(11) + 1;
+                if ((yCoord % 2) == 1) xCoord = ((random.Next(11) + 1) * 2) - (yCoord % 2);
+                else xCoord = random.Next(10) + 1 * 2;
                 string creatureName;
                 if (item == 1) creatureName = "First";
                 else creatureName = "obstacle";
@@ -178,7 +193,11 @@ namespace HexGrid
 
 
             }
-           //FillAllHexes(coordTestList);
+            /*foreach (Creature critter in coordTestList)
+            { MessageBox.Show(critter.XYPos.getX().ToString());
+              MessageBox.Show(critter.XYPos.getY().ToString());
+            }*/
+            FillAllHexes(coordTestList);
         }
     } 
 }

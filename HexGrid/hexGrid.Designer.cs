@@ -60,7 +60,7 @@
             this.Controls.Add(this.Randomizer);
             this.Name = "hexGrid";
             this.Text = "Hexgrid Pathfinder";
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Form1_Paint);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.Grid_Paint);
             this.ResumeLayout(false);
 
         }
