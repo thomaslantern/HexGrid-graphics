@@ -36,6 +36,8 @@ namespace HexGrid
         int startX = 150;
         int startY = 150;
 
+        PaintEventArgs pEventArg;
+
         private void Grid_Paint(object sender, PaintEventArgs e)
         {
             g = e.Graphics;
@@ -89,7 +91,7 @@ namespace HexGrid
 
         }
 
-        void FillAllHexes(List<Creature> creatureList)
+        void FillAllHexes(List<Creature> creatureList, Graphics e)
         {
             foreach (Creature critter in creatureList)
             {
@@ -110,31 +112,25 @@ namespace HexGrid
                 MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
                 MessageBox.Show(critter.Movement.ToString());
 
-
-                FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen);
+                
+                FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen, e);
             }
         }
 
-        void FillHex(int hexCol, int hexRow, string colour, Pen hexPen)
+        void FillHex(int hexCol, int hexRow, string colour, Pen hexPen, Graphics e)
         {
-            MessageBox.Show("FILLHEX: ");
-            MessageBox.Show(hexCol.ToString());
-            MessageBox.Show(hexRow.ToString());
-            MessageBox.Show(colour);
-            MessageBox.Show(hexPen.ToString());
+            
             int x = pixels;
             int y = pixels / 2;
             hexCol = (hexCol + (hexCol % 2)) / 2;
             
-            MessageBox.Show("STARTX STARTY:  ");
-            MessageBox.Show(startX.ToString() + " " + startY.ToString());
+            
             int beginHaxX;
             int beginHaxY;
             
             beginHaxX = startX + ((hexCol - 1) * pixels);
             beginHaxY = startY + ((hexRow - 1) * 2 * pixels);
-            MessageBox.Show("BEGINHAXX BEGINHAXY: ");
-            MessageBox.Show(beginHaxX.ToString() + " " + beginHaxY.ToString());
+            
             Point[] hexPoints =
             {
                     new Point(beginHaxX, beginHaxY),
@@ -153,7 +149,7 @@ namespace HexGrid
             {
                 case "Blue":
                     {
-                        redBrush = new SolidBrush(Color.Blue);
+                        redBrush = new SolidBrush(Color.Purple);
                     }
                     break;
                 case "Brown":
@@ -167,13 +163,18 @@ namespace HexGrid
             graphPath.AddPolygon(hexPoints);
 
             MessageBox.Show(g.ToString());
-            MessageBox.Show(redBrush.ToString());
+            MessageBox.Show(redBrush.Color.ToString());
             MessageBox.Show(graphPath.ToString());
-            // Fill graphics path to screen.
-            g.FillPath(redBrush, graphPath);
-            
 
-            g.DrawLines(myPen, hexPoints);
+
+            // Fill graphics path to screen.
+            
+            //Fillpath stuff
+
+            e.DrawLines(myPen, hexPoints);
+            
+            
+            //e.Graphics.DrawLines(myPen, hexPoints);
         }
 
         private void Randomizer_Click(object sender, EventArgs e)
@@ -204,11 +205,8 @@ namespace HexGrid
 
 
             }
-            /*foreach (Creature critter in coordTestList)
-            { MessageBox.Show(critter.XYPos.getX().ToString());
-              MessageBox.Show(critter.XYPos.getY().ToString());
-            }*/
-            FillAllHexes(coordTestList);
+            
+            FillAllHexes(coordTestList, g);
         }
     } 
 }
