@@ -59,6 +59,7 @@ namespace HexGrid
                     int offsetX = ((rows - 1) % 2);
                     beginHexX = startX + ((cols - 1) * 2 * pixels) + (offsetX * pixels);
                     beginHexY = startY + ((rows - 1) * 2 * pixels);
+                    
                     Point[] hexPoints =
                     {
                     new Point(beginHexX, beginHexY),
@@ -104,9 +105,10 @@ namespace HexGrid
                         colour = "Blue";
                         break;
                 }
-                /*MessageBox.Show(critter.Name);
+                MessageBox.Show("FILLALLHEXES: ");
+                MessageBox.Show(critter.Name);
                 MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
-                MessageBox.Show(critter.Movement.ToString());*/
+                MessageBox.Show(critter.Movement.ToString());
 
 
                 FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen);
@@ -115,30 +117,35 @@ namespace HexGrid
 
         void FillHex(int hexCol, int hexRow, string colour, Pen hexPen)
         {
-
+            MessageBox.Show("FILLHEX: ");
             MessageBox.Show(hexCol.ToString());
             MessageBox.Show(hexRow.ToString());
             MessageBox.Show(colour);
             MessageBox.Show(hexPen.ToString());
             int x = pixels;
             int y = pixels / 2;
-
-
-
-            //int offsetX = ((hexRow) % 2);
-            beginHexX = startX + ((hexCol - 1) * pixels);// + (offsetX * pixels);
-            beginHexY = startY + ((hexRow - 1) * 2 * pixels);
+            hexCol = (hexCol + (hexCol % 2)) / 2;
+            
+            MessageBox.Show("STARTX STARTY:  ");
+            MessageBox.Show(startX.ToString() + " " + startY.ToString());
+            int beginHaxX;
+            int beginHaxY;
+            
+            beginHaxX = startX + ((hexCol - 1) * pixels);
+            beginHaxY = startY + ((hexRow - 1) * 2 * pixels);
+            MessageBox.Show("BEGINHAXX BEGINHAXY: ");
+            MessageBox.Show(beginHaxX.ToString() + " " + beginHaxY.ToString());
             Point[] hexPoints =
             {
-                    new Point(beginHexX, beginHexY),
-                    new Point(beginHexX + x, beginHexY - y),
-                    new Point(beginHexX + (2*x), beginHexY),
-                    new Point(beginHexX + (2*x), beginHexY + y + pixels),
-                    new Point(beginHexX + x, beginHexY + pixels + (2*y)),
-                    new Point(beginHexX, beginHexY + y + pixels),
-                    new Point(beginHexX, beginHexY)
+                    new Point(beginHaxX, beginHaxY),
+                    new Point(beginHaxX + x, beginHaxY - y),
+                    new Point(beginHaxX + (2*x), beginHaxY),
+                    new Point(beginHaxX + (2*x), beginHaxY + y + pixels),
+                    new Point(beginHaxX + x, beginHaxY + pixels + (2*y)),
+                    new Point(beginHaxX, beginHaxY + y + pixels),
+                    new Point(beginHaxX, beginHaxY)
         };
-
+            MessageBox.Show(hexPoints.ToString());
             SolidBrush redBrush = new SolidBrush(Color.Blue);
 
             // Create solid brush.
@@ -159,11 +166,14 @@ namespace HexGrid
             GraphicsPath graphPath = new GraphicsPath();
             graphPath.AddPolygon(hexPoints);
 
-
+            MessageBox.Show(g.ToString());
+            MessageBox.Show(redBrush.ToString());
+            MessageBox.Show(graphPath.ToString());
             // Fill graphics path to screen.
             g.FillPath(redBrush, graphPath);
+            
 
-            g.DrawLines(hexPen, hexPoints);
+            g.DrawLines(myPen, hexPoints);
         }
 
         private void Randomizer_Click(object sender, EventArgs e)
@@ -171,6 +181,7 @@ namespace HexGrid
             var coordTestList = new List<Creature>();
             Random random = new Random();
             int itemCount = random.Next(11);
+            MessageBox.Show(itemCount.ToString());
             for (int item = 1; item <= itemCount; item++)
             {
                 int xCoord;
