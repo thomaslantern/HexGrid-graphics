@@ -77,6 +77,7 @@ namespace HexGrid
                     Brush currentBrush = new SolidBrush(Color.White);
 
                     GraphicsPath graphPath = new GraphicsPath();
+                    graphPath.AddPolygon(hexPoints);
                     gridMap.Add(new Hex()
                     {
                         points = hexPoints,
@@ -89,6 +90,7 @@ namespace HexGrid
 
                     int arrayPos = ((((rows - 1) * 10) - ((rows - 1) - ((rows - 1) % 2)) / 2) + cols - 1);
                     g.DrawLines(myPen, gridMap[arrayPos].points);
+                    
                     
                     g.FillPath(gridMap[arrayPos].Brush, gridMap[arrayPos].graphicsPath);
 
@@ -113,7 +115,7 @@ namespace HexGrid
         {
             foreach (Creature critter in creatureList)
             {
-                string colour;
+                
                 int creatureY = critter.XYPos.getY();
                 int creatureX = critter.XYPos.getX();
                 int arrayPosition = ((creatureY - 1) * 10) + ((creatureX + (creatureX % 2)) / 2) - 1;
@@ -129,15 +131,19 @@ namespace HexGrid
                         break;
                 }
                 
-                MessageBox.Show("FILLALLHEXES: ");
+                
                 MessageBox.Show(critter.Name);
                 MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
-                MessageBox.Show(critter.Movement.ToString());
+                // MessageBox.Show(critter.Movement.ToString());
+
+               
+
+                Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
+               
                 
-                ///THIS THIS THIS NEXT (BELOW)
-
-
-                //this.Invalidate(gridMap[arrayPosition].graphicsPath);
+                
+                this.Invalidate(myRegion);
+                this.Update();
                 
                 //FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen, e);
             }
@@ -178,6 +184,7 @@ namespace HexGrid
             var coordTestList = new List<Creature>();
             Random random = new Random();
             int itemCount = random.Next(10) + 1;
+            
             MessageBox.Show(itemCount.ToString());
             for (int item = 1; item <= itemCount; item++)
             {
