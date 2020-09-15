@@ -29,7 +29,7 @@ namespace HexGrid
         }
         Graphics g;
         Pen myPen = new Pen(Color.Red);
-        Brush myBrush = new SolidBrush(Color.White);
+        
         int pixels = 25;
         
         int beginHexX;
@@ -74,16 +74,25 @@ namespace HexGrid
                     new Point(beginHexX, beginHexY)
                     };
                     int coordX = (rows + (rows % 2)) / 2;
+                    Brush currentBrush = new SolidBrush(Color.White);
+
+                    GraphicsPath graphPath = new GraphicsPath();
                     gridMap.Add(new Hex()
                     {
                         points = hexPoints,
-                        Colour = "White",
-                        Coords = new Coords(coordX, rows)
+                        Brush = currentBrush,
+                        Coords = new Coords(coordX, rows),
+                        graphicsPath = graphPath
+                    }); ;
 
-                    });
-                    g.DrawLines(myPen, hexPoints);
 
-                    //GET THA BRUSH IN THERE
+
+                    int arrayPos = ((((rows - 1) * 10) - ((rows - 1) - ((rows - 1) % 2)) / 2) + cols - 1);
+                    g.DrawLines(myPen, gridMap[arrayPos].points);
+                    
+                    g.FillPath(gridMap[arrayPos].Brush, gridMap[arrayPos].graphicsPath);
+
+                    
 
                 }
             }
@@ -99,33 +108,42 @@ namespace HexGrid
 
         }
 
-        void FillAllHexes(List<Creature> creatureList, Graphics e)
+        
+        void FillAllHexes(List<Creature> creatureList)
         {
             foreach (Creature critter in creatureList)
             {
                 string colour;
+                int creatureY = critter.XYPos.getY();
+                int creatureX = critter.XYPos.getX();
+                int arrayPosition = ((creatureY - 1) * 10) + ((creatureX + (creatureX % 2)) / 2) - 1;
                 switch (critter.Name)
                 {
                     case "obstacle":
 
-                        colour = "Brown";
+                        gridMap[arrayPosition].Brush = new SolidBrush(Color.Brown);
                         break;
 
                     default:
-                        colour = "Blue";
+                        gridMap[arrayPosition].Brush = new SolidBrush(Color.Blue);
                         break;
                 }
+                
                 MessageBox.Show("FILLALLHEXES: ");
                 MessageBox.Show(critter.Name);
                 MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
                 MessageBox.Show(critter.Movement.ToString());
-
                 
-                FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen, e);
+                ///THIS THIS THIS NEXT (BELOW)
+
+
+                //this.Invalidate(gridMap[arrayPosition].graphicsPath);
+                
+                //FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen, e);
             }
         }
 
-        void FillHex(int hexCol, int hexRow, string colour, Pen hexPen, Graphics e)
+        /*void FillHex(int hexCol, int hexRow, string colour, Pen hexPen, Graphics e)
         {
             
             
@@ -152,29 +170,22 @@ namespace HexGrid
             MessageBox.Show(graphPath.ToString());
 
 
-            // Fill graphics path to screen.
             
-            //Fillpath stuff
-
-            e.DrawLines(myPen, hexPoints);
-            
-            
-            //e.Graphics.DrawLines(myPen, hexPoints);
-        }
+        }*/
 
         private void Randomizer_Click(object sender, EventArgs e)
         {
             var coordTestList = new List<Creature>();
             Random random = new Random();
-            int itemCount = random.Next(11);
+            int itemCount = random.Next(10) + 1;
             MessageBox.Show(itemCount.ToString());
             for (int item = 1; item <= itemCount; item++)
             {
-                int xCoord;
+                
                 int yCoord = random.Next(10) + 1;
-                int randMove = random.Next(11) + 1;
-                if ((yCoord % 2) == 1) xCoord = ((random.Next(11) + 1) * 2) - (yCoord % 2);
-                else xCoord = random.Next(10) + 1 * 2;
+                int randMove = random.Next(10) + 1;
+                int xCoord = ((random.Next(10) + 1) * 2) - (yCoord % 2);
+                
                 string creatureName;
                 if (item == 1) creatureName = "First";
                 else creatureName = "obstacle";
@@ -191,7 +202,7 @@ namespace HexGrid
 
             }
             
-            FillAllHexes(coordTestList, g);
+            FillAllHexes(coordTestList);
         }
     } 
 }
