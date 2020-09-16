@@ -89,10 +89,11 @@ namespace HexGrid
 
 
                     int arrayPos = ((((rows - 1) * 10) - ((rows - 1) - ((rows - 1) % 2)) / 2) + cols - 1);
+                    g.FillPath(gridMap[arrayPos].Brush, gridMap[arrayPos].graphicsPath);
                     g.DrawLines(myPen, gridMap[arrayPos].points);
                     
                     
-                    g.FillPath(gridMap[arrayPos].Brush, gridMap[arrayPos].graphicsPath);
+                    
 
                     
 
@@ -118,7 +119,11 @@ namespace HexGrid
                 
                 int creatureY = critter.XYPos.getY();
                 int creatureX = critter.XYPos.getX();
-                int arrayPosition = ((creatureY - 1) * 10) + ((creatureX + (creatureX % 2)) / 2) - 1;
+                int rowsSoFar = creatureY - 1;
+                int evenRowsSoFar = (rowsSoFar - (rowsSoFar % 2)) / 2;
+                int activeRowColumns = (creatureX + (creatureX % 2)) / 2;
+                int hexSoFar = (rowsSoFar * 10) - evenRowsSoFar + activeRowColumns;// 1 for each even row so far
+                int arrayPosition = hexSoFar - 1;
                 switch (critter.Name)
                 {
                     case "obstacle":
@@ -134,7 +139,7 @@ namespace HexGrid
                 
                 MessageBox.Show(critter.Name);
                 MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
-                // MessageBox.Show(critter.Movement.ToString());
+                MessageBox.Show(arrayPosition.ToString());
 
                
 
@@ -188,10 +193,11 @@ namespace HexGrid
             MessageBox.Show(itemCount.ToString());
             for (int item = 1; item <= itemCount; item++)
             {
-                
+                int xCoord;
                 int yCoord = random.Next(10) + 1;
                 int randMove = random.Next(10) + 1;
-                int xCoord = ((random.Next(10) + 1) * 2) - (yCoord % 2);
+                if (yCoord % 2 == 1) xCoord = ((random.Next(10) + 1) * 2) - (yCoord % 2);
+                else xCoord = ((random.Next(9) + 1) * 2);
                 
                 string creatureName;
                 if (item == 1) creatureName = "First";
