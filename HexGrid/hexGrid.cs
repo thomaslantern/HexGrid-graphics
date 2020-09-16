@@ -184,7 +184,236 @@ namespace HexGrid
             
         }*/
 
-        private void Randomizer_Click(object sender, EventArgs e)
+        static string RotateDirection(string direction)
+        {
+            if (direction == "NE") return "E";
+            else if (direction == "E") return "SE";
+            else if (direction == "SE") return "SW";
+            else if (direction == "SW") return "W";
+            else if (direction == "W") return "NW";
+            else if (direction == "NW") return "End";
+            else return "NE";
+        }
+
+        static Coords MoveTo(Coords coord, string direction)
+        {
+
+            int moveX;
+            int moveY;
+
+            if (direction == "NW")
+            {
+                moveX = -1;
+                moveY = -1;
+            }
+            else if (direction == "NE")
+            {
+                moveX = 1;
+                moveY = -1;
+            }
+            else if ((direction == "SE") || (direction == "SW"))
+            {
+                moveX = 1;
+                moveY = 1;
+                if (direction == "SW") moveX = -1;
+
+            }
+            else if (direction == "E")
+            {
+                moveX = 2;
+                moveY = 0;
+            }
+
+            else if (direction == "W")
+            {
+                moveX = -2;
+                moveY = 0;
+            }
+
+            // End; do not move
+            else
+            {
+                moveX = -coord.getX();
+                moveY = -coord.getY();
+            }
+
+            int newCoordX = coord.getX() + moveX;
+            int newCoordY = coord.getY() + moveY;
+
+            return new Coords(newCoordX, newCoordY);
+
+        }
+
+        static bool ObstacleCheck(Coords nextCoord, List<Coords> obstacles)
+        {
+            foreach (Coords coord in obstacles)
+            {
+                if ((nextCoord.getX() == coord.getX()) && (nextCoord.getY() == coord.getY())) return true;
+            }
+            return false;
+        }
+
+        static List<List<Coords>> PossiblePaths(
+             Coords currentPosition,
+             List<Coords> obstacleList,
+             string moveDirection,
+             List<Coords> pathSoFar,
+             List<Coords> exhaustedCoords,
+             int movesLeft,
+             List<List<Coords>> currentPaths,
+             List<string> directionList)
+        {
+
+
+            while (directionList[0] != "End")
+            {
+                
+                Coords nextCoord = MoveTo(currentPosition, moveDirection);
+                if (movesLeft != 0)
+                {
+
+
+
+
+                    // The following code will run if either:
+                    // - The creature is out of movement,
+                    // - There is one movement left but we've already gone every path from the currentPosition, or
+                    // - We've returning or are on a position where we've already gone NW
+                    Console.WriteLine(ObstacleCheck(nextCoord, obstacleList));
+                }
+                if (moveDirection == "End")
+                {
+                    // Add path to list
+                    List<Coords> addedPath = new List<Coords>(pathSoFar);
+                    currentPaths.Add(addedPath);
+
+                    // Add coord to exhausted list
+                    Coords newExhausted = new Coords(pathSoFar[(pathSoFar.Count - 1)].getX(), pathSoFar[(pathSoFar.Count - 1)].getY());
+                    exhaustedCoords.Add(newExhausted);
+
+                    // Remove last item in path 
+                    
+                    pathSoFar.RemoveAt(pathSoFar.Count - 1);
+                    
+
+
+                    // Pop "End" off direction list
+                    directionList.RemoveAt(directionList.Count - 1);
+
+                    // Rotate the direction before it, update the list
+                    moveDirection = RotateDirection(directionList[(directionList.Count - 1)]);
+                    directionList[(directionList.Count - 1)] = moveDirection;
+
+
+
+                    // Add +1 Movement?
+                    movesLeft += 1;
+
+                    currentPosition = pathSoFar[(pathSoFar.Count - 1)];
+
+                }
+                else if (movesLeft == 0)
+                {
+                    // Add path to list, remove last item in path
+                    List<Coords> addedPath = new List<Coords>(pathSoFar);
+                    currentPaths.Add(addedPath);
+
+                    // Pop "End" off list
+
+
+                    pathSoFar.RemoveAt(pathSoFar.Count - 1);
+
+
+                    //if you went NW, no more going from that coordinate
+                    if (moveDirection == "NW")
+                    {
+
+                        Coords newExhausted = new Coords((pathSoFar[(pathSoFar.Count - 1)].getX()), pathSoFar[(pathSoFar.Count - 1)].getY());
+                        pathSoFar.RemoveAt(pathSoFar.Count - 1);
+                        exhaustedCoords.Add(newExhausted);
+                        movesLeft += 1;
+                    }
+
+                    
+                    directionList.RemoveAt(directionList.Count - 1);
+
+
+                    moveDirection = RotateDirection(directionList[(directionList.Count - 1)]);
+                    directionList[(directionList.Count - 1)] = moveDirection;
+
+                    movesLeft += 1;
+                    currentPosition = pathSoFar[(directionList.Count - 1)];
+
+
+                }
+
+                // Obstacle and valid coordinate check
+
+
+                else if ((nextCoord.getX() <= 0) ||
+                    (nextCoord.getY() <= 0) ||
+                    (ObstacleCheck(nextCoord, obstacleList)) ||
+                    (ObstacleCheck(nextCoord, pathSoFar)) ||
+                    (ObstacleCheck(nextCoord, exhaustedCoords)))
+                {
+                    // Fail to move; rotate and try again!
+                    
+                    if (moveDirection == "NW")
+                    {
+                        List<Coords> addedPath = new List<Coords>(pathSoFar);
+                        currentPaths.Add(addedPath);
+                        exhaustedCoords.Add(currentPosition);
+                        directionList.RemoveAt(directionList.Count - 1);
+                        if (directionList.Count == 1) moveDirection = "End";
+                        else RotateDirection(directionList[(directionList.Count - 1)]);
+
+                        directionList[(directionList.Count - 1)] = moveDirection;
+                        movesLeft += 1;
+                        pathSoFar.RemoveAt(pathSoFar.Count - 1);
+                        currentPosition = pathSoFar[(directionList.Count - 1)];
+                    }
+                    else
+                    {
+                        moveDirection = RotateDirection(moveDirection);
+                        directionList[(directionList.Count - 1)] = moveDirection;
+                    }
+                }
+
+
+                else
+                {
+                    // Success!
+                    pathSoFar.Add(nextCoord);
+
+                    currentPosition = nextCoord;
+                    movesLeft -= 1;
+                    moveDirection = "NE";
+                    directionList.Add(moveDirection);
+
+
+                }
+
+
+                
+                
+                
+                
+
+
+               
+                
+            }
+
+            
+            
+
+
+
+
+            return currentPaths;
+        }
+   
+            private void Randomizer_Click(object sender, EventArgs e)
         {
             var coordTestList = new List<Creature>();
             Random random = new Random();
@@ -217,6 +446,12 @@ namespace HexGrid
             
             FillAllHexes(coordTestList);
         }
+
+        private void PossibleMoves_Click(object sender, EventArgs e)
+        { 
+        
+        }
+
     } 
 }
 
