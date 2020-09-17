@@ -324,8 +324,7 @@ namespace HexGrid
                     int hexSoFar = (rowsSoFar * 10) - evenRowsSoFar + activeRowColumns;
                     int arrayPosition = hexSoFar - 1;
                     Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
-                    gridMap[arrayPosition].Brush = new SolidBrush(Color.Green);
-                    
+                    gridMap[arrayPosition].Brush = new SolidBrush(Color.Pink);
                     this.Invalidate(myRegion);
                     this.Update();
 
@@ -342,14 +341,15 @@ namespace HexGrid
                 }   
             }
 
+            
            
-            
-            
 
 
 
 
-            
+
+
+
         }
    
             private void Randomizer_Click(object sender, EventArgs e)
