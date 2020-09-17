@@ -230,27 +230,15 @@ namespace HexGrid
             {
                 
                 Coords nextCoord = MoveTo(currentPosition, moveDirection);
-                //MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
-                if (movesLeft != 0)
-                {
-
-
-
-
-                    // The following code will run if either:
-                    // - The creature is out of movement,
-                    // - There is one movement left but we've already gone every path from the currentPosition, or
-                    // - We've returning or are on a position where we've already gone NW
-                }
+                
+               
                 if (moveDirection == "End")
                 {
+                    
                     // Add path to list
                     List<Coords> addedPath = new List<Coords>(pathSoFar);
                     currentPaths.Add(addedPath);
 
-                    // Add coord to exhausted list
-                    Coords newExhausted = new Coords(currentPosition.getX(), currentPosition.getY());
-                    exhaustedCoords.Add(newExhausted);
 
                     // Remove last item in path 
                     
@@ -269,7 +257,7 @@ namespace HexGrid
 
                     // Add +1 Movement?
                     movesLeft += 1;
-
+                    //Go back to last position
                     currentPosition = pathSoFar[(pathSoFar.Count - 1)];
 
                 }
@@ -279,31 +267,27 @@ namespace HexGrid
                     List<Coords> addedPath = new List<Coords>(pathSoFar);
                     currentPaths.Add(addedPath);
 
-                    // Pop "End" off list
+                   
 
-
+                    //Knock last item off list, we're going back one
                     pathSoFar.RemoveAt(pathSoFar.Count - 1);
 
 
-                    //if you went NW, no more going from that coordinate
-                    if (moveDirection == "NW")
-                    {
-
-                        Coords newExhausted = new Coords((pathSoFar[(pathSoFar.Count - 1)].getX()), pathSoFar[(pathSoFar.Count - 1)].getY());
-                        pathSoFar.RemoveAt(pathSoFar.Count - 1);
-                        exhaustedCoords.Add(newExhausted);
-                        movesLeft += 1;
-                    }
-
-                    
-                    directionList.RemoveAt(directionList.Count - 1);
-
-
-                    moveDirection = RotateDirection(directionList[(directionList.Count - 1)]);
-                    directionList[(directionList.Count - 1)] = moveDirection;
+                    //Can't go here as a last move anymore
+                    Coords newExhausted = new Coords((pathSoFar[(pathSoFar.Count - 1)].getX()), pathSoFar[(pathSoFar.Count - 1)].getY());
+                    exhaustedCoords.Add(newExhausted);
 
                     movesLeft += 1;
-                    currentPosition = pathSoFar[(directionList.Count - 1)];
+                    currentPosition = pathSoFar[pathSoFar.Count - 1];
+
+                    
+
+
+                    // Update direction, update end of list
+                    moveDirection = RotateDirection(moveDirection);
+                    directionList[(directionList.Count - 1)] = moveDirection;
+
+                    
 
 
                 }
@@ -317,43 +301,14 @@ namespace HexGrid
                     (nextCoord.getY() > 10) ||
                     (ObstacleCheck(nextCoord, obstacleList)) ||
                     (ObstacleCheck(nextCoord, pathSoFar)) ||
-                    (ObstacleCheck(nextCoord, exhaustedCoords)))
-                {
+                    ((ObstacleCheck(nextCoord, exhaustedCoords)) && (movesLeft == 1)))
+                    {
                     // Fail to move; rotate and try again!
-                  /*  MessageBox.Show("Failed: can't move to (" + nextCoord.getX().ToString() + ", " +
-                        nextCoord.getY().ToString() + ")");*/
-
-
-                    if (moveDirection == "NW")
-                    {
-                        List<Coords> addedPath = new List<Coords>(pathSoFar);
-                        currentPaths.Add(addedPath);
-                        exhaustedCoords.Add(currentPosition);
-
-                        if (directionList.Count == 1) moveDirection = "End";
-                        else
-                        {
-                            directionList.RemoveAt(directionList.Count - 1);
-                            RotateDirection(directionList[(directionList.Count - 1)]);
-                        }
-                        moveDirection = directionList[(directionList.Count - 1)];
-                        movesLeft += 1;
-                        pathSoFar.RemoveAt(pathSoFar.Count - 1);
-                        if (pathSoFar.Count == 1)
-                        {
-                            MessageBox.Show("DIRECTION LIST IS " + directionList.Count.ToString());
-                            MessageBox.Show("DIRECTINO IS: " + moveDirection);
-                            MessageBox.Show(pathSoFar[0].ToString());
-                        }
-                        else currentPosition = pathSoFar[(pathSoFar.Count - 1)]; 
-                        
-                    }
-                    else
-                    {
+                  
                         moveDirection = RotateDirection(moveDirection);
                         directionList[(directionList.Count - 1)] = moveDirection;
                     }
-                }
+                
 
 
                 else
@@ -372,19 +327,22 @@ namespace HexGrid
                     gridMap[arrayPosition].Brush = new SolidBrush(Color.Green);
                     
                     this.Invalidate(myRegion);
-                    
+                    this.Update();
+
                     pathSoFar.Add(nextCoord);
 
                     currentPosition = nextCoord;
                     movesLeft -= 1;
-                    moveDirection = "NE";
-                    directionList.Add(moveDirection);
+                    if (movesLeft != 0)
+                    {
+                        moveDirection = "NE";
+                        directionList.Add(moveDirection);
 
-
+                    }
                 }   
             }
 
-            this.Update();
+           
             
             
 
@@ -446,7 +404,8 @@ namespace HexGrid
            
             PossiblePaths(
                 creatureList[0].XYPos, 
-                obstacles, "NE", 
+                obstacles, 
+                "NE", 
                 new List<Coords>() { creatureList[0].XYPos }, 
                 new List<Coords>() { }, 
                 creatureList[0].Movement, 
