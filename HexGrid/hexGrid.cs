@@ -135,11 +135,10 @@ namespace HexGrid
                         gridMap[arrayPosition].Brush = new SolidBrush(Color.Blue);
                         break;
                 }
-          
                 Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
-               
-                
-                
+
+
+
                 this.Invalidate(myRegion);
                 this.Update();
                 
@@ -215,7 +214,7 @@ namespace HexGrid
             return false;
         }
 
-        static List<List<Coords>> PossiblePaths(
+       void PossiblePaths(
              Coords currentPosition,
              List<Coords> obstacleList,
              string moveDirection,
@@ -231,6 +230,7 @@ namespace HexGrid
             {
                 
                 Coords nextCoord = MoveTo(currentPosition, moveDirection);
+                
                 if (movesLeft != 0)
                 {
 
@@ -313,6 +313,8 @@ namespace HexGrid
 
                 else if ((nextCoord.getX() <= 0) ||
                     (nextCoord.getY() <= 0) ||
+                    (nextCoord.getX() > 20) ||
+                    (nextCoord.getY() > 10) ||
                     (ObstacleCheck(nextCoord, obstacleList)) ||
                     (ObstacleCheck(nextCoord, pathSoFar)) ||
                     (ObstacleCheck(nextCoord, exhaustedCoords)))
@@ -344,6 +346,19 @@ namespace HexGrid
                 else
                 {
                     // Success!
+
+                    int creatureY = currentPosition.getY();
+                    int creatureX = currentPosition.getX();
+                    int rowsSoFar = creatureY - 1;
+                    int evenRowsSoFar = (rowsSoFar - (rowsSoFar % 2)) / 2;
+                    int activeRowColumns = (creatureX + (creatureX % 2)) / 2;
+                    int hexSoFar = (rowsSoFar * 10) - evenRowsSoFar + activeRowColumns;
+                    int arrayPosition = hexSoFar - 1;
+                    Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
+                    gridMap[arrayPosition].Brush = new SolidBrush(Color.Green);
+                    MessageBox.Show(nextCoord.ToString());
+                    this.Invalidate(myRegion);
+                    
                     pathSoFar.Add(nextCoord);
 
                     currentPosition = nextCoord;
@@ -355,13 +370,14 @@ namespace HexGrid
                 }   
             }
 
+            this.Update();
             
             
 
 
 
 
-            return currentPaths;
+            
         }
    
             private void Randomizer_Click(object sender, EventArgs e)
@@ -381,7 +397,11 @@ namespace HexGrid
                 else xCoord = ((random.Next(9) + 1) * 2);
                 
                 string creatureName;
-                if (item == 1) creatureName = "First";
+                if (item == 1)
+                {
+                    creatureName = "First";
+                    MessageBox.Show(randMove.ToString());
+                }
                 else creatureName = "obstacle";
 
                 Creature creature = 
@@ -403,15 +423,25 @@ namespace HexGrid
         private void PossibleMoves_Click(object sender, EventArgs e)
         {
             Creature creature = creatureList[0];
-            List<Creature> obstacles = new List<Creature>() { };
+            List<Coords> obstacles = new List<Coords>() { };
             for (int obstcl = 1; obstcl < (creatureList.Count - 1); obstcl++)
             {
-                obstacles.Add(creatureList[obstcl]);
+                obstacles.Add(creatureList[obstcl].XYPos);
             }
-        
-        /// DO A BUNCH OF STUFF STARTING HERE TO SEND TO FUNCTION FROM CONSOLE, YAY
-        }
+            
+           
+            PossiblePaths(
+                creatureList[0].XYPos, 
+                obstacles, "NE", 
+                new List<Coords>() { creatureList[0].XYPos }, 
+                new List<Coords>() { }, 
+                creatureList[0].Movement, 
+                new List<List<Coords>>() { }, 
+                new List<String>() {"NE"});
 
-    } 
+
+}
+
+} 
 }
 
