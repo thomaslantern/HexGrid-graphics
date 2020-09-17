@@ -230,7 +230,7 @@ namespace HexGrid
             {
                 
                 Coords nextCoord = MoveTo(currentPosition, moveDirection);
-                
+MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                 if (movesLeft != 0)
                 {
 
@@ -313,14 +313,17 @@ namespace HexGrid
 
                 else if ((nextCoord.getX() <= 0) ||
                     (nextCoord.getY() <= 0) ||
-                    (nextCoord.getX() > 20) ||
+                    (nextCoord.getX() > 19) ||
                     (nextCoord.getY() > 10) ||
                     (ObstacleCheck(nextCoord, obstacleList)) ||
                     (ObstacleCheck(nextCoord, pathSoFar)) ||
                     (ObstacleCheck(nextCoord, exhaustedCoords)))
                 {
                     // Fail to move; rotate and try again!
-                    
+                    MessageBox.Show("Failed: can't move to (" + nextCoord.getX().ToString() + ", " +
+                        nextCoord.getY().ToString() + ")");
+
+
                     if (moveDirection == "NW")
                     {
                         List<Coords> addedPath = new List<Coords>(pathSoFar);
@@ -346,9 +349,10 @@ namespace HexGrid
                 else
                 {
                     // Success!
-
-                    int creatureY = currentPosition.getY();
-                    int creatureX = currentPosition.getX();
+                    MessageBox.Show("Add coordinates: (" + nextCoord.getX().ToString() + ", " +
+                        nextCoord.getY().ToString() + ")");
+                    int creatureY = nextCoord.getY();
+                    int creatureX = nextCoord.getX();
                     int rowsSoFar = creatureY - 1;
                     int evenRowsSoFar = (rowsSoFar - (rowsSoFar % 2)) / 2;
                     int activeRowColumns = (creatureX + (creatureX % 2)) / 2;
@@ -356,7 +360,7 @@ namespace HexGrid
                     int arrayPosition = hexSoFar - 1;
                     Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
                     gridMap[arrayPosition].Brush = new SolidBrush(Color.Green);
-                    MessageBox.Show(nextCoord.ToString());
+                    
                     this.Invalidate(myRegion);
                     
                     pathSoFar.Add(nextCoord);
