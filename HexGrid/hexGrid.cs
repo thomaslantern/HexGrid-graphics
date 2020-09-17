@@ -230,7 +230,7 @@ namespace HexGrid
             {
                 
                 Coords nextCoord = MoveTo(currentPosition, moveDirection);
-MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
+                //MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                 if (movesLeft != 0)
                 {
 
@@ -249,7 +249,7 @@ MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                     currentPaths.Add(addedPath);
 
                     // Add coord to exhausted list
-                    Coords newExhausted = new Coords(pathSoFar[(pathSoFar.Count - 1)].getX(), pathSoFar[(pathSoFar.Count - 1)].getY());
+                    Coords newExhausted = new Coords(currentPosition.getX(), currentPosition.getY());
                     exhaustedCoords.Add(newExhausted);
 
                     // Remove last item in path 
@@ -320,8 +320,8 @@ MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                     (ObstacleCheck(nextCoord, exhaustedCoords)))
                 {
                     // Fail to move; rotate and try again!
-                    MessageBox.Show("Failed: can't move to (" + nextCoord.getX().ToString() + ", " +
-                        nextCoord.getY().ToString() + ")");
+                  /*  MessageBox.Show("Failed: can't move to (" + nextCoord.getX().ToString() + ", " +
+                        nextCoord.getY().ToString() + ")");*/
 
 
                     if (moveDirection == "NW")
@@ -329,14 +329,24 @@ MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                         List<Coords> addedPath = new List<Coords>(pathSoFar);
                         currentPaths.Add(addedPath);
                         exhaustedCoords.Add(currentPosition);
-                        directionList.RemoveAt(directionList.Count - 1);
-                        if (directionList.Count == 1) moveDirection = "End";
-                        else RotateDirection(directionList[(directionList.Count - 1)]);
 
-                        directionList[(directionList.Count - 1)] = moveDirection;
+                        if (directionList.Count == 1) moveDirection = "End";
+                        else
+                        {
+                            directionList.RemoveAt(directionList.Count - 1);
+                            RotateDirection(directionList[(directionList.Count - 1)]);
+                        }
+                        moveDirection = directionList[(directionList.Count - 1)];
                         movesLeft += 1;
                         pathSoFar.RemoveAt(pathSoFar.Count - 1);
-                        currentPosition = pathSoFar[(directionList.Count - 1)];
+                        if (pathSoFar.Count == 1)
+                        {
+                            MessageBox.Show("DIRECTION LIST IS " + directionList.Count.ToString());
+                            MessageBox.Show("DIRECTINO IS: " + moveDirection);
+                            MessageBox.Show(pathSoFar[0].ToString());
+                        }
+                        else currentPosition = pathSoFar[(pathSoFar.Count - 1)]; 
+                        
                     }
                     else
                     {
@@ -349,8 +359,8 @@ MessageBox.Show("Next COORD: " + nextCoord.getX() + ", " + nextCoord.getY());
                 else
                 {
                     // Success!
-                    MessageBox.Show("Add coordinates: (" + nextCoord.getX().ToString() + ", " +
-                        nextCoord.getY().ToString() + ")");
+                   /* MessageBox.Show("Add coordinates: (" + nextCoord.getX().ToString() + ", " +
+                        nextCoord.getY().ToString() + ")");*/
                     int creatureY = nextCoord.getY();
                     int creatureX = nextCoord.getX();
                     int rowsSoFar = creatureY - 1;
