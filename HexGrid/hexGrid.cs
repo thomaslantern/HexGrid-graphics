@@ -36,6 +36,7 @@ namespace HexGrid
         int beginHexY;
         int startX = 150;
         int startY = 150;
+        List<Creature> creatureList = new List<Creature>() { };
         List<Hex> gridMap = new List<Hex>() { };
         
 
@@ -100,7 +101,7 @@ namespace HexGrid
                 }
             }
 
-
+            
 
 
             
@@ -110,13 +111,12 @@ namespace HexGrid
 
 
         }
-
         
         void FillAllHexes(List<Creature> creatureList)
         {
             foreach (Creature critter in creatureList)
             {
-                
+
                 int creatureY = critter.XYPos.getY();
                 int creatureX = critter.XYPos.getX();
                 int rowsSoFar = creatureY - 1;
@@ -135,14 +135,7 @@ namespace HexGrid
                         gridMap[arrayPosition].Brush = new SolidBrush(Color.Blue);
                         break;
                 }
-                
-                
-                MessageBox.Show(critter.Name);
-                MessageBox.Show(critter.XYPos.getX().ToString() + " " + critter.XYPos.getY().ToString());
-                MessageBox.Show(arrayPosition.ToString());
-
-               
-
+          
                 Region myRegion = new Region(gridMap[arrayPosition].graphicsPath);
                
                 
@@ -150,39 +143,8 @@ namespace HexGrid
                 this.Invalidate(myRegion);
                 this.Update();
                 
-                //FillHex(critter.XYPos.getX(), critter.XYPos.getY(), colour, myPen, e);
             }
         }
-
-        /*void FillHex(int hexCol, int hexRow, string colour, Pen hexPen, Graphics e)
-        {
-            
-            
-            // Create solid brush.
-            switch (colour)
-            {
-                case "Blue":
-                    {
-                        redBrush = new SolidBrush(Color.Purple);
-                    }
-                    break;
-                case "Brown":
-                    {
-                        redBrush = new SolidBrush(Color.Brown);
-                    }
-                    break;
-            }
-            // Create graphics path object and add ellipse.
-            GraphicsPath graphPath = new GraphicsPath();
-            graphPath.AddPolygon(hexPoints);
-
-            MessageBox.Show(g.ToString());
-            MessageBox.Show(redBrush.Color.ToString());
-            MessageBox.Show(graphPath.ToString());
-
-
-            
-        }*/
 
         static string RotateDirection(string direction)
         {
@@ -279,7 +241,6 @@ namespace HexGrid
                     // - The creature is out of movement,
                     // - There is one movement left but we've already gone every path from the currentPosition, or
                     // - We've returning or are on a position where we've already gone NW
-                    Console.WriteLine(ObstacleCheck(nextCoord, obstacleList));
                 }
                 if (moveDirection == "End")
                 {
@@ -391,17 +352,7 @@ namespace HexGrid
                     directionList.Add(moveDirection);
 
 
-                }
-
-
-                
-                
-                
-                
-
-
-               
-                
+                }   
             }
 
             
@@ -420,6 +371,7 @@ namespace HexGrid
             int itemCount = random.Next(10) + 1;
             
             MessageBox.Show(itemCount.ToString());
+            creatureList = new List<Creature> { };
             for (int item = 1; item <= itemCount; item++)
             {
                 int xCoord;
@@ -432,14 +384,15 @@ namespace HexGrid
                 if (item == 1) creatureName = "First";
                 else creatureName = "obstacle";
 
-                coordTestList.Add(new Creature
+                Creature creature = 
+                new Creature
                 {
                     Name = creatureName,
                     XYPos = new Coords(xCoord, yCoord),
                     Movement = randMove
-                });
-
-
+                };
+                coordTestList.Add(creature);
+                creatureList.Add(creature);
 
 
             }
@@ -448,8 +401,15 @@ namespace HexGrid
         }
 
         private void PossibleMoves_Click(object sender, EventArgs e)
-        { 
+        {
+            Creature creature = creatureList[0];
+            List<Creature> obstacles = new List<Creature>() { };
+            for (int obstcl = 1; obstcl < (creatureList.Count - 1); obstcl++)
+            {
+                obstacles.Add(creatureList[obstcl]);
+            }
         
+        /// DO A BUNCH OF STUFF STARTING HERE TO SEND TO FUNCTION FROM CONSOLE, YAY
         }
 
     } 
