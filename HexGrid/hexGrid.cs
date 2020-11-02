@@ -357,7 +357,8 @@ namespace HexGrid
             var coordTestList = new List<Creature>();
             Random random = new Random();
             int itemCount = random.Next(10) + 1;
-            
+
+            MessageBox.Show("Number of random items: ");
             MessageBox.Show(itemCount.ToString());
             creatureList = new List<Creature> { };
             for (int item = 1; item <= itemCount; item++)
@@ -396,7 +397,7 @@ namespace HexGrid
         {
             Creature creature = creatureList[0];
             List<Coords> obstacles = new List<Coords>() { };
-            for (int obstcl = 1; obstcl < (creatureList.Count - 1); obstcl++)
+            for (int obstcl = 1; obstcl <= (creatureList.Count - 1); obstcl++)
             {
                 obstacles.Add(creatureList[obstcl].XYPos);
             }
