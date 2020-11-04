@@ -156,6 +156,89 @@ namespace HexGrid
             else return "NE";
         }
 
+        static bool CreateObstacle(List<string> directionList)
+        {
+            // True if: only Ne, Only E, only SE, only SW, only W, only NW
+            // True if: only NE and E, only E and SE, only SW and W, only NW and W
+            switch (directionList[0])
+            {
+                case "NE":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NW") ||
+                            (direction == "SW") ||
+                            (direction == "W") ||
+                            (direction == "SE")) return false;
+                        
+                    }
+                    return true;
+                    
+                    
+                                   
+                case "E":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NW") ||
+                            (direction == "SW") ||
+                            (direction == "W")) return false;
+
+                        else if ((directionList.Contains("NE")) && (directionList.Contains("SE"))) return false;
+                        
+                    }
+                    return true;
+
+
+
+                case "SE":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NE") ||
+                            (direction == "SW") ||
+                            (direction == "W") ||
+                            (direction == "NW")) return false;
+                        
+
+                    }
+                    return true;
+
+                case "SW":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NW") ||
+                            (direction == "SE") ||
+                            (direction == "E") ||
+                            (direction == "NE")) return false;
+                        
+
+                    }
+                    return true;
+
+                case "W":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NE") ||
+                            (direction == "SE") ||
+                            (direction == "E")) return false;
+
+                        else if ((directionList.Contains("NW")) && (directionList.Contains("SW"))) return false;
+                    }
+                    return true;
+
+                case "NW":
+                    foreach (string direction in directionList)
+                    {
+                        if ((direction == "NE") ||
+                            (direction == "SE") ||
+                            (direction == "E") ||
+                            (direction == "SW")) return false;
+                    }
+                    return true;
+
+                default: return false;
+            }
+            return false;
+        }
+
         static Coords MoveTo(Coords coord, string direction)
         {
 
@@ -220,7 +303,7 @@ namespace HexGrid
              string moveDirection,
              List<Coords> pathSoFar,
              List<Coords> exhaustedCoords,
-             int movesLeft,
+             int movesLeft,        
              List<List<Coords>> currentPaths,
              List<string> directionList)
         {
@@ -231,7 +314,13 @@ namespace HexGrid
                 
                 Coords nextCoord = MoveTo(currentPosition, moveDirection);
                 
-               
+                //Determine whether to go through this coordinate on any other paths
+                if (CreateObstacle(directionList))
+                {
+                    /// DEAL WITH REDUNDANCY PLS
+                    obstacleList.Add(currentPosition);
+
+                }
                 if (moveDirection == "End")
                 {
                     
@@ -243,7 +332,12 @@ namespace HexGrid
                     // Remove last item in path 
                     
                     pathSoFar.RemoveAt(pathSoFar.Count - 1);
-                    
+                   /* if (((currentPosition.getY() - 1) > 0) || (currentPosition.getX() - 1) > 0)
+                    {
+                        Coords newObstacle = new Coords(currentPosition.getX() - 1, currentPosition.getY() - 1);
+                        
+                    } */
+                    // DOESNT WORK RIGHT NOW - fix it!
 
 
                     // Pop "End" off direction list
@@ -404,12 +498,12 @@ namespace HexGrid
             
            
             PossiblePaths(
-                creatureList[0].XYPos, 
+                creatureList[0].XYPos,
                 obstacles, 
                 "NE", 
                 new List<Coords>() { creatureList[0].XYPos }, 
                 new List<Coords>() { }, 
-                creatureList[0].Movement, 
+                creatureList[0].Movement,
                 new List<List<Coords>>() { }, 
                 new List<String>() {"NE"});
 
