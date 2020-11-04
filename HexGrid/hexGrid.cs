@@ -317,8 +317,8 @@ namespace HexGrid
                 //Determine whether to go through this coordinate on any other paths
                 if (CreateObstacle(directionList))
                 {
-                    /// DEAL WITH REDUNDANCY PLS
-                    obstacleList.Add(currentPosition);
+                    if (obstacleList.Contains(currentPosition)) obstacleList.Add(currentPosition);
+                    
 
                 }
                 if (moveDirection == "End")
@@ -451,7 +451,7 @@ namespace HexGrid
             var coordTestList = new List<Creature>();
             Random random = new Random();
             int itemCount = random.Next(10) + 1;
-
+            Coords eatIt = new Coords(1, 3);
             MessageBox.Show("Number of random items: ");
             MessageBox.Show(itemCount.ToString());
             creatureList = new List<Creature> { };
