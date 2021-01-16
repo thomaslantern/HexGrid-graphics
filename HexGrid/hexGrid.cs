@@ -176,13 +176,14 @@ namespace HexGrid
                     
                                    
                 case "E":
+                    if ((directionList.Contains("NE")) && (directionList.Contains("SE"))) return false;
                     foreach (string direction in directionList)
                     {
                         if ((direction == "NW") ||
                             (direction == "SW") ||
                             (direction == "W")) return false;
-
-                        else if ((directionList.Contains("NE")) && (directionList.Contains("SE"))) return false;
+                        else return true;
+                        
                         
                     }
                     return true;
@@ -214,13 +215,14 @@ namespace HexGrid
                     return true;
 
                 case "W":
+                    if ((directionList.Contains("NW")) && (directionList.Contains("SW"))) return false;
                     foreach (string direction in directionList)
                     {
                         if ((direction == "NE") ||
                             (direction == "SE") ||
                             (direction == "E")) return false;
 
-                        else if ((directionList.Contains("NW")) && (directionList.Contains("SW"))) return false;
+                        else return true;
                     }
                     return true;
 
@@ -332,13 +334,7 @@ namespace HexGrid
                     // Remove last item in path 
                     
                     pathSoFar.RemoveAt(pathSoFar.Count - 1);
-                   /* if (((currentPosition.getY() - 1) > 0) || (currentPosition.getX() - 1) > 0)
-                    {
-                        Coords newObstacle = new Coords(currentPosition.getX() - 1, currentPosition.getY() - 1);
-                        
-                    } */
-                    // DOESNT WORK RIGHT NOW - fix it!
-
+                 
 
                     // Pop "End" off direction list
                     directionList.RemoveAt(directionList.Count - 1);
